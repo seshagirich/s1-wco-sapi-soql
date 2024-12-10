@@ -1,0 +1,21 @@
+#%RAML 1.0
+title: wco-sapi-soql
+protocols:
+  - HTTP
+  - HTTPS
+
+/customer/{customerid}:
+  uriParameters:
+    customerid:
+      type: number
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                " customerDetails": {}
+              }
+
+        
