@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd  http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
-    
-
-   
-    <flow name="wco-sapi-soql-main">
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+    <http:listener-config name="wco-sapi-soql-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="wco-sapi-soql-config" api="wco-sapi-soql.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="651ba453-38b9-4c1e-b6b1-af2684292376" >
+		<salesforce:basic-connection username="seshuchennupati1@gmail.com" password="Seshu@2020" securityToken="mIEUzWtCmNDymdsAxWpBSx7bk" />
+	</salesforce:sfdc-config>
+	<flow name="wco-sapi-soql-main">
         <http:listener config-ref="wco-sapi-soql-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
@@ -21,15 +26,10 @@
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-    "errorMessage": 'bar request',
-	"errorDesc": error.description,
-	"errorCode": vars.httpStatus,
-	"correlationId": correlationId
-}]]></ee:set-payload>
+{message: "Bad request"}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
@@ -39,15 +39,10 @@ output application/json
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-    "errorMessage": "not found",
-	"errorDesc": error.description,
-	"errorCode": vars.httpStatus,
-	"correlationId": correlationId
-}]]></ee:set-payload>
+{message: "Resource not found"}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
@@ -70,15 +65,10 @@ output application/json
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-    "errorMessage": error.errorMessage,
-	"errorDesc": error.description,
-	"errorCode": vars.httpStatus,
-	"correlationId": correlationId
-}]]></ee:set-payload>
+{message: "Not acceptable"}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
@@ -101,33 +91,38 @@ output application/json
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-    "errorMessage": error.errorMessage,
-	"errorDesc": error.description,
-	"errorCode": vars.httpStatus,
-	"correlationId": correlationId
-}]]></ee:set-payload>
+{message: "Not Implemented"}]]></ee:set-payload>
                     </ee:message>
                     <ee:variables>
-                        <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
                     </ee:variables>
                 </ee:transform>
             </on-error-propagate>
         </error-handler>
     </flow>
+    <flow name="get:\customer:wco-sapi-soql-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  " customerDetails": {}
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
     <flow name="get:\customer\(customerid):wco-sapi-soql-config">
-        <logger level="INFO" doc:name='"==start==="' doc:id="94839880-16c4-4ec7-aad7-b21905000b71" message='#["==start==="]'/>
-		<set-variable value="#[attributes.uriParams.customerid]" doc:name="Set customerID" doc:id="c5b046ec-bd18-40cd-a1c5-1d0ac5ad0ac3" variableName="customerID" />
-		<flow-ref doc:name="commonStartLoggerFlowSub_Flow" doc:id="2b3a93f8-f5e3-4155-9446-7e1fd00d8f88" name="commonStartLoggerFlowSub_Flow"/>
+		<set-variable value="#[attributes.uriParams.customerid]" doc:name="Set customerID" doc:id="c5b046ec-bd18-40cd-a1c5-1d0ac5ad0ac3" variableName="customerID"/>
 		<salesforce:query doc:id="314558a0-9383-420f-a093-b02287c9935d" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT customerid__c, Name, locationCode__c from eproducts__c where customerid__c =':customerID']]></salesforce:salesforce-query>
-            <salesforce:parameters><![CDATA[#[output application/java
+			<salesforce:salesforce-query ><![CDATA[SELECT customerid__c, Name, locationCode__c from eproducts__c where customerid__c =':customerID']]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
 ---
 {
 	"customerID" : vars.customerID
 }]]]></salesforce:parameters>
-        </salesforce:query>
-        <ee:transform doc:name="response">
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -135,8 +130,5 @@ output application/json
 payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
-		<flow-ref doc:name="commonEndLoggerFlowSub_Flow" doc:id="3e9bd0dc-ac81-4993-ae44-d4dd47f1a473" name="commonEndLoggerFlowSub_Flow"/>
-		<logger level="INFO" doc:name='"==end==="' doc:id="c9d6b39a-235f-422a-af59-ffc15e75f6c3" message='#["==end==="]'/>
-		<error-handler ref="globalErrorFlowError_Handler" />
     </flow>
 </mule>
