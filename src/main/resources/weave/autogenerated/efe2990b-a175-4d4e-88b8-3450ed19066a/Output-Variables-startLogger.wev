@@ -1,0 +1,8 @@
+%dw 2.0
+
+type auto_efe2990b_a175_4d4e_88b8_3450ed19066a_Output_Variables_startLogger = {|
+  flowName: Null, 
+  status: String, 
+  correlationID: String
+|}
+
