@@ -6,6 +6,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<error-handler name="globalErrorFlowError_Handler" doc:id="fcaea150-aed2-47a7-8cf5-f7852366b1a2" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="738fc1bb-c945-40b0-9eaf-2f9fd002b12f" >
+			<set-variable value='#[error.errorType]' doc:name="Set errorType" doc:id="f9eca028-4ca4-4682-8d97-39616a2d2942" variableName="errorType"/>
 			<ee:transform doc:name="error-response" doc:id="bad4ded4-ba54-4ba2-b7ca-f7cb280c25df" >
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
@@ -14,7 +15,7 @@ output application/json
 {
     "errorMessage": error.errorMessage,
 	"errorDesc": error.description,
-	"errorCode": vars.httpStatus,
+	"errorType": vars.errorType,
 	"correlationId": correlationId
 }]]></ee:set-payload>
 				</ee:message>

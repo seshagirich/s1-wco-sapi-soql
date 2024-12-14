@@ -115,28 +115,6 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\customer\(customerid):wco-sapi-soql-config">
-        <logger level="INFO" doc:name='"==start==="' doc:id="94839880-16c4-4ec7-aad7-b21905000b71" message='#["==start==="]'/>
-		<set-variable value="#[attributes.uriParams.customerid]" doc:name="Set customerID" doc:id="c5b046ec-bd18-40cd-a1c5-1d0ac5ad0ac3" variableName="customerID" />
-		<flow-ref doc:name="commonStartLoggerFlowSub_Flow" doc:id="2b3a93f8-f5e3-4155-9446-7e1fd00d8f88" name="commonStartLoggerFlowSub_Flow"/>
-		<salesforce:query doc:id="314558a0-9383-420f-a093-b02287c9935d" config-ref="Salesforce_Config">
-            <salesforce:salesforce-query><![CDATA[SELECT customerid__c, Name, locationCode__c from eproducts__c where customerid__c =':customerID']]></salesforce:salesforce-query>
-            <salesforce:parameters><![CDATA[#[output application/java
----
-{
-	"customerID" : vars.customerID
-}]]]></salesforce:parameters>
-        </salesforce:query>
-        <ee:transform doc:name="response">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-payload]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-		<flow-ref doc:name="commonEndLoggerFlowSub_Flow" doc:id="3e9bd0dc-ac81-4993-ae44-d4dd47f1a473" name="commonEndLoggerFlowSub_Flow"/>
-		<logger level="INFO" doc:name='"==end==="' doc:id="c9d6b39a-235f-422a-af59-ffc15e75f6c3" message='#["==end==="]'/>
-		<error-handler ref="globalErrorFlowError_Handler" />
-    </flow>
+    
+    
 </mule>
