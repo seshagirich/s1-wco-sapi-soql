@@ -19,3 +19,21 @@ protocols:
               }
 
         
+
+/emailSignup:
+  post:
+    body:
+      application/json:
+        example:
+          {
+              "emailId": "seshu",
+              "domain": "@gmail.com"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+                  {
+                      "message": "email address create"
+                  }

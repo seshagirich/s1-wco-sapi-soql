@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="get:\customer\(customerid):wco-sapi-soql-config">
         <logger level="INFO" doc:name='"==start==="' doc:id="05c978ae-75ea-4275-9228-043ccdc2f9c6" message='#["==start==="]'/>
 		<set-variable value="#[attributes.uriParams.customerid]" doc:name="Set customerID" doc:id="749c58ba-6af6-46af-8466-291308e188fb" variableName="customerID" />
@@ -30,4 +31,5 @@ payload]]></ee:set-payload>
 		<logger level="INFO" doc:name='"==end==="' doc:id="d031da19-bcad-4968-8965-1ab2fea04661" message='#["==end==="]'/>
 		<error-handler ref="globalErrorFlowError_Handler" />
     </flow>
-	</mule>
+	
+</mule>

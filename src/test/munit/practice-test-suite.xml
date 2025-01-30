@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="practice-test-suite.xml" />
+	<munit:test name="practice-1" doc:id="6077f084-21c4-40ea-b767-5fc41343155c" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="salesforce:query" doc:id="117a502a-a496-4dab-a42c-bcdbcb5f3d7a" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Query for get customerId" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="353cdbfe-0a64-467d-9582-9f0941e1b057" >
+				<munit:attributes value="#[{ uriParams : { &quot;customerid&quot; : '13'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\customer\(customerid):wco-sapi-soql-config" doc:id="88653bd3-1a31-46ef-885a-3f29cf2e7a15" name="get:\customer\(customerid):wco-sapi-soql-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="f9a9d5cb-22a9-4701-a21c-1e2f98c1c5ca" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue='"==end==="' attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+
+	</munit:test>
+	<munit:test name="practice-2" doc:id="1f0537c9-43c6-4fd8-80ee-bb82dfba77dc" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="salesforce query" doc:id="e3a4ef25-bf2f-4046-90c3-c53423d9dcad" processor="set-variable">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Set customerID" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="2d473594-6bd3-4a03-81d0-95268b59b62c" >
+				<munit:attributes value="#[{ uriParams : { &quot;customerid&quot; : '13'}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\customer\(customerid):wco-sapi-soql-config" doc:id="fbab33eb-02a3-4da5-a283-ff8f335ccd21" name="get:\customer\(customerid):wco-sapi-soql-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="8e781ead-8d96-42ed-a2a8-c399a63daf59" processor="logger">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue='"==end==="' attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+
+	</munit:test>
+</mule>
