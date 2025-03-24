@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<flow name="get:\customer\(customerid):wco-sapi-soql-config">
+        <logger level="INFO" doc:name='"==start==="' doc:id="05c978ae-75ea-4275-9228-043ccdc2f9c6" message='#["==start==="]'/>
+		<set-variable value="#[attributes.uriParams.customerid]" doc:name="Set customerID" doc:id="749c58ba-6af6-46af-8466-291308e188fb" variableName="customerID" />
+		<flow-ref doc:name="commonStartLoggerFlowSub_Flow" doc:id="d31cc6c7-6770-4915-9189-c669688aee8e" name="commonStartLoggerFlowSub_Flow"/>
+		<salesforce:query doc:id="284b7460-bbb0-4f34-969d-6f7654952d20" config-ref="Salesforce_Config" doc:name="Query for get customerId">
+            <salesforce:salesforce-query><![CDATA[SELECT customerid__c, Name, locationCode__c from eproducts__c where customerid__c =':customerID']]></salesforce:salesforce-query>
+            <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"customerID" : vars.customerID
+}]]]></salesforce:parameters>
+        </salesforce:query>
+		<ee:transform doc:name="response">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<flow-ref doc:name="commonEndLoggerFlowSub_Flow" doc:id="3da38e4d-2f04-4e9d-a2cb-385ffa7ee2ed" name="commonEndLoggerFlowSub_Flow"/>
+		<logger level="INFO" doc:name='"==end==="' doc:id="d031da19-bcad-4968-8965-1ab2fea04661" message='#["==end==="]'/>
+		<error-handler ref="globalErrorFlowError_Handler" />
+    </flow>
+	
+</mule>

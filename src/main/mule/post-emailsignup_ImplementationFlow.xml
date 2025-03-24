@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="3b141cb0-3f25-40ef-a86b-50e044099a73" >
+		<email:smtps-connection host="smtp.gmail.com" user="siva.rk.chennupati@gmail.com" password="tuzn ewgc evle ewtx" >
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</email:smtps-connection>
+	</email:smtp-config>
+	<flow name="post:\emailSignup:application\json:wco-sapi-soql-config">
+        <logger level="INFO" doc:name="===start===" doc:id="283be6a3-5da4-49fe-a440-8462fa1783eb" message="===start==="/>
+		<logger level="INFO" doc:name="input request" doc:id="2a2ec5ff-0434-4bbd-84a8-0d0493b89fef" message="******input request payload**#[payload]"/>
+		<set-variable value="#[[payload]]" doc:name="Set Variable" doc:id="5e5f2557-5561-4376-8f92-e43d7febb023" variableName="reqPayload"/>
+		<salesforce:query doc:name="Query_soql" doc:id="7003ccd3-a2a8-4555-9659-2c4b951d892d" target="soqlResponse" config-ref="Salesforce_Config_email">
+			<salesforce:salesforce-query ><![CDATA[SELECT Id, domain__c, email_id__c FROM email_signup__c WHERE email_id__c = ':id' ]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[{
+	"id": payload.emailId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Transform Message" doc:id="811543a6-c34a-47b6-8343-ab45756d5f3a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+if(isEmpty(vars.soqlResponse)) "create" else 
+ vars.soqlResponse filter ($.email_id__c == vars.reqPayload.emailId[0] and $.domain__c == vars.reqPayload.domain[0])]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="8fd503a2-7f38-4ad7-a38d-8c9f152d7071" >
+			<when expression='#[payload == "create"]'>
+				<ee:transform doc:name="create" doc:id="652f811d-b14c-48a8-971e-406d4653f1bc" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.reqPayload map {
+         "email_id__c": $.emailId,
+        "domain__c": $.domain
+        
+    }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:create doc:name="Create" doc:id="242ed6a8-90a9-48f4-b340-c4aea76c8ce4" type="email_signup__c" config-ref="Salesforce_Config_email"/>
+				<ee:transform doc:name="Transform Message" doc:id="fad1d37c-ef93-44b3-b643-9f96218b90ea" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "email address create"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<flow-ref doc:name="Flow Reference" doc:id="6e4e125f-9892-4b76-ae16-a05e30639eaf" name="post-emailsignup_ImplementationFlowSub_Flow"/>
+			</when>
+			<when expression="#[payload == []]">
+				<ee:transform doc:name="update" doc:id="a99dec5e-bdb3-4caf-a6b1-0830cff14565" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.reqPayload map {
+         "email_id__c": $.emailId,
+        "domain__c": $.domain,
+        "Id": vars.soqlResponse.Id[0]
+    }]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<salesforce:upsert doc:name="Upsert" doc:id="5d5dbb8f-b064-4bd1-92e2-230e45b9de26" objectType="email_signup__c" externalIdFieldName="Id" config-ref="Salesforce_Config_email">
+				</salesforce:upsert>
+				<ee:transform doc:name="Transform Message" doc:id="83c32485-c178-44ac-918d-cd3061c9153d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"email address update"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<flow-ref doc:name="Flow Reference" doc:id="d0093240-71a5-401a-ae96-5349a2699d56" name="post-emailsignup_ImplementationFlowSub_Flow"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="already existed" doc:id="91d517fa-5af8-46df-b9dc-5d7cfb7f2029" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"email address already existed"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="===folw end===" doc:id="ecb7146b-60de-4596-93dc-15f8b149c7c9" message="===folw end==="/>
+    
+</flow>
+	<sub-flow name="post-emailsignup_ImplementationFlowSub_Flow" doc:id="77dba216-35f3-48e9-bc61-07f3f1cf2795" >
+		<set-variable value="#[randomInt(1000000)]" doc:name="Set Variable" doc:id="ce21a1e8-22de-4d28-a321-103aa1fa09c4" variableName="code"/>
+		<set-variable value='#[vars.reqPayload.emailId[0] ++ " " ++ vars.reqPayload.domain[0] ++ " user try to create account"]' doc:name="Set Variable" doc:id="3f5ada3f-66e0-4aae-a617-c5db0c22e87d" variableName="subject"/>
+		<ee:transform doc:name="Transform Message" doc:id="299019be-c7d3-4ce6-a237-47f375d440e5" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="emailPayload" ><![CDATA[%dw 2.0
+output text/plain
+---
+upper("Log in to your account,\n\n") ++  
+"Use this one-time code to verify your email: " ++ vars.code ++ "\n\n" ++ 
+"Code validity: 60 sec"
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<email:send doc:id="9de4807e-a504-432b-a803-c486e7d8cb82" config-ref="Email_SMTP" fromAddress="siva.rk.chennupati@gmail.com" subject='#[vars.subject default "no subject"]'>
+			<reconnect />
+			<email:to-addresses >
+				<email:to-address value="siva.rk.chennupati@gmail.com" />
+				<email:to-address value="seshuchennupati1@gmail.com" />
+			</email:to-addresses>
+			<email:body>
+				<email:content ><![CDATA[#[vars.emailPayload]]]></email:content>
+			</email:body>
+		</email:send>
+		<logger level="INFO" doc:name="===email send success===" doc:id="c4c0a263-98f2-456d-b31b-b1eba13807b9" message="===email send success==="/>
+	</sub-flow>
+	
+	
+</mule>

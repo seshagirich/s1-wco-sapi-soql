@@ -1,0 +1,47 @@
+#%RAML 1.0
+title: wco-sapi-soql
+protocols:
+  - HTTP
+  - HTTPS
+
+
+
+traits:
+  Client-ID-Policy: !include /exchange-module-v1/clientID-enforcement-trait.raml
+
+
+/customer/{customerid}:
+  uriParameters:
+    customerid:
+      type: number
+  get:
+    is: [Client-ID-Policy]
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                " customerDetails": {}
+              }
+
+        
+
+/emailSignup:
+  post:
+    is: [Client-ID-Policy]
+    body:
+      application/json:
+        example:
+          {
+              "emailId": "seshu",
+              "domain": "@gmail.com"
+          }
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+                  {
+                      "message": "email address create"
+                  }

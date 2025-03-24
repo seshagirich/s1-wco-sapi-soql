@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="wco-sapi-soql-test-suite.xml" />
+	
+	<munit:test name="badrequest" doc:id="1059ebb7-2fd4-4fe5-9073-2167e3f0a07c" description="Test" expectedErrorType="APIKIT:BAD_REQUEST">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="a7088aac-a7b6-4e28-9bde-6cae6d61679b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="66503e8e-4ab6-4c24-8a44-b194cf1f1685" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+	
+	<munit:test name="APIKIT:NOT_FOUND" doc:id="a8b44ac5-9d89-4f42-802b-77d4a47bf8cb" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="a81a2899-8019-44c6-8de4-224d93555fdf" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="572efe2a-2dff-478e-af19-ef2fa044502c" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+	
+	<munit:test name="APIKIT:METHOD_NOT_ALLOWED" doc:id="3b9e9238-1e6e-4b57-9719-61998ee991bc" description="Test" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="fac2a88b-378d-41cd-9574-84b7b18a17fd" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="8a2a49f8-2ce9-45b8-bcaf-983dae8e01fd" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+	
+	<munit:test name="APIKIT:NOT_ACCEPTABLE" doc:id="5d04d978-282a-41b5-a027-dc60256a4bcd" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="a36cf57a-13a0-473f-b5d5-3b8c5f87d65b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="3a4f15d1-854a-431b-873c-13ceb80b5e0e" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+	
+	<munit:test name="APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="2220fd04-b409-419a-8869-7b8b69fb8395" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="12e0b715-c4f1-42e3-9236-8597a10f1829" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="ccd336a6-4f1e-4e57-a883-557180380830" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+	
+	<munit:test name="APIKIT:NOT_IMPLEMENTED" doc:id="721642a9-1818-472b-94ed-b045caee2641" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="apikit:router" doc:id="018980b2-eeb8-4885-8b54-dbd3e15be2c2" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="wco-sapi-soql-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			
+</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to wco-sapi-soql-main" doc:id="e845346e-9778-42ae-ab58-bbb6d0ada4d7" name="wco-sapi-soql-main"/>
+		</munit:execution>
+	</munit:test>
+
+</mule>
