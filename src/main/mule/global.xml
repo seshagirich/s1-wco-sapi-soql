@@ -17,6 +17,9 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
     </salesforce:sfdc-config>
         <apikit:config name="wco-sapi-soql-config" api="wco-sapi-soql.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<configuration-properties doc:name="Configuration properties" doc:id="b00668bc-4b07-4cc5-9a06-b2009a24fafc" file="dev.properties" />
+	<salesforce:sfdc-config name="Salesforce_Config_email" doc:name="Salesforce Config" doc:id="2a35cc1f-6ad6-486a-a4a9-d0fe3199c9b3" >
+		<salesforce:basic-connection username="${salesforce.siva.username}" password="${salesforce.siva.password}" securityToken="${salesforce.siva.securityToken}" />
+	</salesforce:sfdc-config>
 	
 	
 	

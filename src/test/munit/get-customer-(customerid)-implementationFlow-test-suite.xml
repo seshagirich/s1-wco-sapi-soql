@@ -15,6 +15,9 @@
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="Query for get customerId" attributeName="doc:name" />
 				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#["soql resp"]' />
+				</munit-tools:then-return>
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
@@ -29,6 +32,7 @@
 					<munit-tools:with-attribute whereValue='"==end==="' attributeName="doc:name" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
+			<!-- [STUDIO:"Assert that"]<munit-tools:assert-that doc:name="Assert that" doc:id="a0127e4c-ab4c-4020-a298-43e899c112f5" expression="#[payload&#93;" is="#[MunitTools::notNullValue()&#93;"/> [STUDIO] -->
 		</munit:validation>
 	</munit:test>
 	<munit:test name="get-customer-(customerid)-implementationFlow-test-suiteForErrorFlow" doc:id="37809342-2543-4bd1-932e-7a4209cd8839" description="Test" expectedErrorType="SALESFORCE:INVALID_INPUT">

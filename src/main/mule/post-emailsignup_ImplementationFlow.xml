@@ -8,12 +8,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
-http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd"> 
-	
-	
-	<salesforce:sfdc-config name="Salesforce_Config1" doc:name="Salesforce Config" doc:id="cc660b2c-90aa-44b9-91b5-696113e6f55c" >
-		<salesforce:basic-connection username="siva.rk.chennupati@gmail.com" password="sivA@2020-1" securityToken="vQ07dxwji7n649jFPwDUU1p3x" />
-	</salesforce:sfdc-config>
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="3b141cb0-3f25-40ef-a86b-50e044099a73" >
 		<email:smtps-connection host="smtp.gmail.com" user="siva.rk.chennupati@gmail.com" password="tuzn ewgc evle ewtx" >
 			<tls:context >
@@ -25,7 +20,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
         <logger level="INFO" doc:name="===start===" doc:id="283be6a3-5da4-49fe-a440-8462fa1783eb" message="===start==="/>
 		<logger level="INFO" doc:name="input request" doc:id="2a2ec5ff-0434-4bbd-84a8-0d0493b89fef" message="******input request payload**#[payload]"/>
 		<set-variable value="#[[payload]]" doc:name="Set Variable" doc:id="5e5f2557-5561-4376-8f92-e43d7febb023" variableName="reqPayload"/>
-		<salesforce:query doc:name="Query_soql" doc:id="7003ccd3-a2a8-4555-9659-2c4b951d892d" config-ref="Salesforce_Config1" target="soqlResponse">
+		<salesforce:query doc:name="Query_soql" doc:id="7003ccd3-a2a8-4555-9659-2c4b951d892d" target="soqlResponse" config-ref="Salesforce_Config_email">
 			<salesforce:salesforce-query ><![CDATA[SELECT Id, domain__c, email_id__c FROM email_signup__c WHERE email_id__c = ':id' ]]></salesforce:salesforce-query>
 			<salesforce:parameters ><![CDATA[#[{
 	"id": payload.emailId
@@ -54,7 +49,7 @@ vars.reqPayload map {
     }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<salesforce:create doc:name="Create" doc:id="242ed6a8-90a9-48f4-b340-c4aea76c8ce4" config-ref="Salesforce_Config1" type="email_signup__c"/>
+				<salesforce:create doc:name="Create" doc:id="242ed6a8-90a9-48f4-b340-c4aea76c8ce4" type="email_signup__c" config-ref="Salesforce_Config_email"/>
 				<ee:transform doc:name="Transform Message" doc:id="fad1d37c-ef93-44b3-b643-9f96218b90ea" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -80,7 +75,7 @@ vars.reqPayload map {
     }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<salesforce:upsert doc:name="Upsert" doc:id="5d5dbb8f-b064-4bd1-92e2-230e45b9de26" config-ref="Salesforce_Config1" objectType="email_signup__c" externalIdFieldName="Id">
+				<salesforce:upsert doc:name="Upsert" doc:id="5d5dbb8f-b064-4bd1-92e2-230e45b9de26" objectType="email_signup__c" externalIdFieldName="Id" config-ref="Salesforce_Config_email">
 				</salesforce:upsert>
 				<ee:transform doc:name="Transform Message" doc:id="83c32485-c178-44ac-918d-cd3061c9153d" >
 					<ee:message >

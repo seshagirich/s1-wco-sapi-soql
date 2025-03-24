@@ -4,11 +4,18 @@ protocols:
   - HTTP
   - HTTPS
 
+
+
+traits:
+  Client-ID-Policy: !include /exchange-module-v1/clientID-enforcement-trait.raml
+
+
 /customer/{customerid}:
   uriParameters:
     customerid:
       type: number
   get:
+    is: [Client-ID-Policy]
     responses:
       200:
         body:
@@ -22,6 +29,7 @@ protocols:
 
 /emailSignup:
   post:
+    is: [Client-ID-Policy]
     body:
       application/json:
         example:
